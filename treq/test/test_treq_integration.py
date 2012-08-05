@@ -6,8 +6,7 @@ import treq
 HTTPBIN_URL = "http://httpbin.org"
 HTTPSBIN_URL = "https://httpbin.org"
 
-debug = True
-
+debug = False
 
 @inlineCallbacks
 def print_response(response):
@@ -124,7 +123,9 @@ class TreqIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         yield print_response(response)
 
-    def tearDown(self):
+    def notearDown(self):
+        treq.pool.closeCachedConnections()
+        return
         print "Trying to import and close connections..."
         print "Type(_connections) = " , type(treq.pool._connections)
         print "Type(_timeouts) = " , type(treq.pool._timeouts)

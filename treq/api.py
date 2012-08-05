@@ -10,7 +10,7 @@ from twisted.web.http_headers import Headers
 from treq.response import Response
 
 
-pool = HTTPConnectionPool(reactor)
+pool = HTTPConnectionPool(reactor, persistent=False)
 _agent = Agent(reactor, pool=pool)
 
 #_agent = Agent(reactor)
