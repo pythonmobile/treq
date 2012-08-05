@@ -124,6 +124,48 @@ class TreqIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         yield print_response(response)
 
+    def tearDown(self):
+        print "Trying to import and close connections..."
+        print "Type(_connections) = " , type(treq.pool._connections)
+        print "Type(_timeouts) = " , type(treq.pool._timeouts)
+        print "="*40, "Connections"
+        print treq.pool._connections
+        print "="*40, "Timeouts"
+        print treq.pool._timeouts
+        print "="*40
+        for key, value in treq.pool._connections.iteritems():
+            print treq.pool._connections, len(treq.pool._connections)
+            dropped = value[0]
+            print "Value of dropped = ", dropped, "\t", type(dropped)
+            try:
+                print "Trying to cancel...", dropped
+                print dropped.state
+                dropped.transport.loseConnection()
+                #dropped.abort()
+                print dropped.state
+            except Exception as E:
+                print "Something went wrong: %s" % E
+            else:
+                print key, "...", "Cancelled!"
+
+        for key,value in treq.pool._timeouts.iteritems():
+            key.abort()
+            value.cancel()
+            
+        treq.pool._timeouts = dict()
+        treq.pool._connections = dict()
+        
+        #print treq.pool._connections
+        #for key in treq.pool._connections:
+            #try:
+                #treq.pool._connections[key].transport.loseConnection()
+            #except:
+                #pass
+        #treq.pool._connections = dict()
+        #print treq.pool._connections
+        ##transport.loseConnection()
+        ##treq.pool.closeCachedConnections()
+        #print "I am here!"
 
 class HTTPSTreqIntegrationTests(TreqIntegrationTests):
     baseurl = HTTPSBIN_URL

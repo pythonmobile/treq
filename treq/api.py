@@ -3,14 +3,17 @@ from zope.interface import implements
 from twisted.internet import reactor
 from twisted.internet.defer import succeed
 
-from twisted.web.client import Agent, RedirectAgent
+from twisted.web.client import Agent, RedirectAgent, HTTPConnectionPool
 from twisted.web.iweb import IBodyProducer
 from twisted.web.http_headers import Headers
 
 from treq.response import Response
 
 
-_agent = Agent(reactor)
+pool = HTTPConnectionPool(reactor)
+_agent = Agent(reactor, pool=pool)
+
+#_agent = Agent(reactor)
 
 
 def head(url, headers=None, params=None, allow_redirects=True):
