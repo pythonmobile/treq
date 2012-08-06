@@ -123,7 +123,7 @@ class TreqIntegrationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         yield print_response(response)
 
-    def notearDown(self):
+    def tearDown(self):
         treq.pool.closeCachedConnections()
         return
         print "Trying to import and close connections..."
